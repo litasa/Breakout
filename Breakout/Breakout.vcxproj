@@ -18,6 +18,21 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\Application.cpp" />
+    <ClCompile Include="source\Main.cpp" />
+    <ClCompile Include="source\Resource_Manager.cpp" />
+    <ClCompile Include="source\Shader.cpp" />
+    <ClCompile Include="source\Sprite_Renderer.cpp" />
+    <ClCompile Include="source\Texture2D.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="source\Application.h" />
+    <ClInclude Include="source\Resource_Manager.h" />
+    <ClInclude Include="source\Shader.h" />
+    <ClInclude Include="source\Sprite_Renderer.h" />
+    <ClInclude Include="source\Texture2D.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{AF0A6AAE-3C01-46CD-BE6A-903DA3742C1F}</ProjectGuid>
     <RootNamespace>Breakout</RootNamespace>
@@ -87,9 +102,10 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>F:\Github Projects\Breakout\Dependencies\glfw-3.2.1\include;F:\Github Projects\Breakout\Dependencies\SOIL\Simple OpenGL Image Library\src;F:\Github Projects\Breakout\Dependencies\glew-2.0.0\include;F:\Github Projects\Breakout\Dependencies\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>opengl32.lib;SOIL.lib;glfw3.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glew32s.lib;opengl32.lib;SOIL.lib;glfw3.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>F:\Github Projects\Breakout\Dependencies\glfw-3.2.1\lib;F:\Github Projects\Breakout\Dependencies\SOIL\Simple OpenGL Image Library\lib;F:\Github Projects\Breakout\Dependencies\glew-2.0.0\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -114,27 +130,15 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>F:\Github Projects\Breakout\Dependencies\glfw-3.2.1\include;F:\Github Projects\Breakout\Dependencies\SOIL\Simple OpenGL Image Library\src;F:\Github Projects\Breakout\Dependencies\glew-2.0.0\include;F:\Github Projects\Breakout\Dependencies\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>opengl32.lib;SOIL.lib;glfw3.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glew32s.lib;opengl32.lib;SOIL.lib;glfw3.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>F:\Github Projects\Breakout\Dependencies\glfw-3.2.1\lib;F:\Github Projects\Breakout\Dependencies\SOIL\Simple OpenGL Image Library\lib;F:\Github Projects\Breakout\Dependencies\glew-2.0.0\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="Application.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Resource_Manager.cpp" />
-    <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="Texture2D.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Application.h" />
-    <ClInclude Include="Resource_Manager.h" />
-    <ClInclude Include="Shader.h" />
-    <ClInclude Include="Texture2D.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
