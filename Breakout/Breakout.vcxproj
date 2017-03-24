@@ -20,6 +20,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Application.cpp" />
+    <ClCompile Include="source\Brick.cpp" />
+    <ClCompile Include="source\Game_Level.cpp" />
+    <ClCompile Include="source\Game_Object.cpp" />
     <ClCompile Include="source\Main.cpp" />
     <ClCompile Include="source\Resource_Manager.cpp" />
     <ClCompile Include="source\Shader.cpp" />
@@ -28,6 +31,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\Application.h" />
+    <ClInclude Include="source\Brick.h" />
+    <ClInclude Include="source\Game_Level.h" />
+    <ClInclude Include="source\Game_Object.h" />
     <ClInclude Include="source\Resource_Manager.h" />
     <ClInclude Include="source\Shader.h" />
     <ClInclude Include="source\Sprite_Renderer.h" />
