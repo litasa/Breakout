@@ -228,5 +228,5 @@ _Pvt_Extensions
 # Jakob ADDED STUFF
 *.zip
 *.txt
-/Breakout.VC.db
-/Breakout.VC.VC.opendb
+*Breakout.VC.db
+*Breakout.VC.VC.opendb
