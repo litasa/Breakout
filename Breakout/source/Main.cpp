@@ -3,7 +3,7 @@
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
 #include "Resource_Manager.h"
-#include "Application.h"
+#include "Game.h"
 
 #include <iostream>
 
@@ -12,7 +12,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 const GLuint SCREEN_WIDTH = 800;
 const GLuint SCREEN_HEIGHT = 600;
 
-Application BreakOut(SCREEN_WIDTH, SCREEN_HEIGHT);
+Game BreakOut(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 int main() {
 
@@ -42,7 +42,7 @@ int main() {
 	double delta_time = 0.0f;
 	double last_frame = 0.0f;
 
-	BreakOut._state = Application::State::ACTIVE;
+	BreakOut._state = Game::State::ACTIVE;
 
 	while (!glfwWindowShouldClose(window))
 	{

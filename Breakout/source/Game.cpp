@@ -1,11 +1,11 @@
-#include "Application.h"
+#include "Game.h"
 #include "Resource_Manager.h"
 
 #include <GLFW\glfw3.h>
 
 #include <glm\gtc\matrix_transform.hpp>
 
-Application::Application(unsigned int width, unsigned int height)
+Game::Game(unsigned int width, unsigned int height)
 	:
 	_state(State::ACTIVE),
 	_width(width),
@@ -14,11 +14,11 @@ Application::Application(unsigned int width, unsigned int height)
 }
 
 
-Application::~Application()
+Game::~Game()
 {
 }
 
-void Application::Init()
+void Game::Init()
 {
 	//load shaders
 	Resource_Manager::LoadShader("./data/shaders/sprite.vertex", "./data/shaders/sprite.fragment", nullptr, "sprite");
@@ -41,16 +41,26 @@ void Application::Init()
 	glm::vec2 ball_pos = playerPos + glm::vec2(PLAYER_SIZE.x / 2 - BALL_RADIUS, -BALL_RADIUS * 2);
 	_ball = new Ball_Object(ball_pos, BALL_RADIUS, INITIAL_BALL_VELOCITY, Resource_Manager::GetTexture("face"));
 
+	//particles
+	Resource_Manager::LoadShader("./data/shaders/particle.vertex", "./data/shaders/particle.fragment", nullptr, "particle");
+	Resource_Manager::GetShader("particle").Use().setInteger("sprite", 0);
+	Resource_Manager::GetShader("particle").setMatrix4("projection", projection);
+	Resource_Manager::LoadTexture("./data/textures/particle.png", "particle");
+	_particle_generator = new Particle_Generator(
+		Resource_Manager::GetShader("particle"),
+		Resource_Manager::GetTexture("particle"),
+		500);
 	//brick textures
 	Resource_Manager::LoadTexture("./data/textures/background.jpg", "background");
 	Resource_Manager::LoadTexture("./data/textures/block.png", "block");
 	Resource_Manager::LoadTexture("./data/textures/block_solid.png", "block_solid");
 
 	//load levels
-	Game_Level one;   one.Load  ("./data/levels/level_1.txt", this->_width, this->_height*0.5);
-	Game_Level two;	  two.Load  ("./data/levels/level_2.txt", this->_width, this->_height*0.5);
-	Game_Level three; three.Load("./data/levels/level_3.txt", this->_width, this->_height*0.5);
-	Game_Level four;  four.Load ("./data/levels/level_4.txt", this->_width, this->_height*0.5);
+	unsigned int half_height = unsigned(this->_height*0.5);
+	Game_Level one;   one.Load  ("./data/levels/level_1.txt", this->_width, half_height);
+	Game_Level two;	  two.Load  ("./data/levels/level_2.txt", this->_width, half_height);
+	Game_Level three; three.Load("./data/levels/level_3.txt", this->_width, half_height);
+	Game_Level four;  four.Load ("./data/levels/level_4.txt", this->_width, half_height);
 	this->_levels.push_back(one);
 	this->_levels.push_back(two);
 	this->_levels.push_back(three);
@@ -58,7 +68,7 @@ void Application::Init()
 	this->_current_level = 1;
 }
 
-void Application::ProcessInput(float dt)
+void Game::ProcessInput(float dt)
 {
 	if (this->_state == State::ACTIVE)
 	{
@@ -102,11 +112,14 @@ void Application::ProcessInput(float dt)
 	}
 }
 
-void Application::Update(float dt)
+void Game::Update(float dt)
 {
 	_ball->Move(dt, this->_width);
 
 	this->PerformCollision();
+
+	this->_particle_generator->Update(dt, *_ball, 2, glm::vec2(_ball->_radius/2,_ball->_radius/2));
+
 	if (_ball->_position.y >= this->_height) // Did ball reach bottom edge?
 	{
 		this->ResetLevel();
@@ -115,7 +128,7 @@ void Application::Update(float dt)
 	}
 }
 
-void Application::Render()
+void Game::Render()
 {
 	if (this->_state == State::ACTIVE)
 	{
@@ -126,10 +139,12 @@ void Application::Render()
 
 		this->_player->Draw(*_sprite_renderer);
 		this->_ball->Draw(*_sprite_renderer);
+
+		this->_particle_generator->Draw();
 	}
 }
 
-bool Application::checkCollision(Game_Object & first, Game_Object & second)
+bool Game::checkCollision(Game_Object & first, Game_Object & second)
 {
 	//x-axis collision
 	bool collision_x = first._position.x + first._size.x >= second._position.x &&
@@ -142,7 +157,7 @@ bool Application::checkCollision(Game_Object & first, Game_Object & second)
 	return collision_x && collision_y;
 }
 
-Application::Collision Application::checkCollision(Game_Object & first, Ball_Object & ball)
+Game::Collision Game::checkCollision(Game_Object & first, Ball_Object & ball)
 {
 	glm::vec2 ball_center(ball._position + ball._radius);
 	glm::vec2 aabb_half_extents(first._size.x / 2, first._size.y / 2);
@@ -164,19 +179,20 @@ Application::Collision Application::checkCollision(Game_Object & first, Ball_Obj
 	return std::make_tuple(false, UP, glm::vec2(0, 0));
 }
 
-void Application::ResetLevel()
+void Game::ResetLevel()
 {
+	unsigned int half_height = unsigned(this->_height* 0.5f);
 	if (this->_current_level == 0)
-		this->_levels[0].Load("./data/levels/level_1.txt", this->_width, this->_height* 0.5f);
+		this->_levels[0].Load("./data/levels/level_1.txt", this->_width, half_height);
 	else if (this->_current_level == 1)
-		this->_levels[1].Load("./data/levels/level_2.txt", this->_width, this->_height* 0.5f);
+		this->_levels[1].Load("./data/levels/level_2.txt", this->_width, half_height);
 	else if (this->_current_level == 2)
-		this->_levels[2].Load("./data/levels/level_3.txt", this->_width, this->_height* 0.5f);
+		this->_levels[2].Load("./data/levels/level_3.txt", this->_width, half_height);
 	else if (this->_current_level == 3)
-		this->_levels[3].Load("./data/levels/level_4.txt", this->_width, this->_height* 0.5f);
+		this->_levels[3].Load("./data/levels/level_4.txt", this->_width, half_height);
 }
 
-void Application::ResetPlayer()
+void Game::ResetPlayer()
 {
 	// Reset player/ball stats
 	_player->_size = PLAYER_SIZE;
@@ -184,7 +200,7 @@ void Application::ResetPlayer()
 	_ball->Reset(_player->_position + glm::vec2(PLAYER_SIZE.x / 2 - BALL_RADIUS, -(BALL_RADIUS * 2)), INITIAL_BALL_VELOCITY);
 }
 
-Application::Direction Application::VectorHitDirection(glm::vec2 target)
+Game::Direction Game::VectorHitDirection(glm::vec2 target)
 {
 	glm::vec2 compass[] = {
 		glm::vec2(0.0f,  1.0f), //up
@@ -206,7 +222,7 @@ Application::Direction Application::VectorHitDirection(glm::vec2 target)
 	return (Direction)best_match;
 }
 
-void Application::PerformCollision()
+void Game::PerformCollision()
 {
 	for (Brick &brick : this->_levels[this->_current_level]._bricks)
 	{

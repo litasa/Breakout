@@ -2,8 +2,9 @@
 #include "Sprite_Renderer.h"
 #include "Game_Level.h"
 #include "Ball_Object.h"
+#include "Particle_Generator.h"
 
-class Application
+class Game
 {
 	enum Direction
 	{
@@ -15,8 +16,8 @@ class Application
 
 	typedef std::tuple<GLboolean, Direction, glm::vec2> Collision;
 public:
-	Application(unsigned int width, unsigned int height);
-	~Application();
+	Game(unsigned int width, unsigned int height);
+	~Game();
 
 	void Init();
 
@@ -41,6 +42,7 @@ public:
 
 	Game_Object* _player;
 	Ball_Object* _ball;
+	Particle_Generator* _particle_generator;
 
 private:
 	Sprite_Renderer* _sprite_renderer;
@@ -50,7 +52,7 @@ private:
 
 	// Initial velocity of the Ball
 	const glm::vec2 INITIAL_BALL_VELOCITY = glm::vec2(100.0f, -350.0f);
-	const float BALL_RADIUS = 12.5f;
+	const float BALL_RADIUS = 20;
 
 	// AABB - AABB collision
 	bool checkCollision(Game_Object &first, Game_Object &second);
