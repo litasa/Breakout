@@ -5,6 +5,7 @@
 #include <glm\vec4.hpp>
 #include <glm\mat4x4.hpp>
 #include <string>
+#include <sstream>
 
 class Shader
 {
@@ -16,7 +17,7 @@ public:
 	GLuint ID;
 
 	Shader &Use();
-	void Compile(const char* vertex_source, const char* fragment_source, const char* geometry_source = nullptr);
+	void Compile(const char* vertex_source, const char* fragment_source, const char* geometry_source, std::stringstream& ss);
 
 	void setFloat(const char* variable, float value, bool use_shader = false);
 	void setInteger(const char* variable, int value, bool use_shader = false);
@@ -40,6 +41,6 @@ private:
 		GEOMETRY,
 		PROGRAM
 	};
-	void checkCompileErrors(GLuint object, CHECK type);
+	void checkCompileErrors(GLuint object, CHECK type, std::stringstream &ss);
 };
 

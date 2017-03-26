@@ -3,6 +3,7 @@
 
 
 #include <iostream>
+#include <sstream>
 #include <fstream>
 #include <SOIL.h>
 
@@ -15,9 +16,12 @@ Resource_Manager::~Resource_Manager()
 {
 }
 
-Shader Resource_Manager::LoadShader(const char * vertex_source, const char * fragment_source, const char * geometry_source, std::string name)
+Shader Resource_Manager::LoadShader(std::string name, const char * vertex_source, const char * fragment_source, const char * geometry_source)
 {
-	Shaders[name] = loadShaderFromFile(vertex_source, fragment_source, geometry_source);
+	std::stringstream ss;
+	ss << "Loading: " << name << " ";
+	Shaders[name] = loadShaderFromFile(vertex_source, fragment_source, geometry_source, ss);
+	std::cout << ss.str() << std::endl;
 	return Shaders[name];
 }
 
@@ -26,9 +30,11 @@ Shader Resource_Manager::GetShader(std::string name)
 	return Shaders[name];
 }
 
-Texture2D Resource_Manager::LoadTexture(const char * file, std::string name)
+Texture2D Resource_Manager::LoadTexture(std::string name, const char * file)
 {
-	Textures[name] = loadTextureFromFile(file);
+	std::stringstream ss;
+	Textures[name] = loadTextureFromFile(file, ss);
+	std::cout << ss.str() << std::endl;
 	return Textures[name];
 }
 
@@ -47,21 +53,21 @@ void Resource_Manager::Clear()
 	}
 }
 
-Shader Resource_Manager::loadShaderFromFile(const char * vertex_source, const char * fragment_source, const char * geometry_source)
+Shader Resource_Manager::loadShaderFromFile(const char * vertex_source, const char * fragment_source, const char * geometry_source, std::stringstream &ss)
 {
 	std::ifstream vertex, fragment, geometry;
 	std::string geometry_code;
 
 	vertex.open(vertex_source, std::ios_base::in);
 	if (!vertex.is_open()) {
-		std::cerr << "Error opening file: " << vertex_source << std::endl;
+		ss << "Error opening file: " << vertex_source << std::endl;
 	}
 	std::string vertex_code(std::istreambuf_iterator<char>(vertex), (std::istreambuf_iterator<char>()));
 	vertex.close();
 
 	fragment.open(fragment_source, std::ios_base::in);
 	if (!fragment.is_open()) {
-		std::cerr << "Error opening file: " << fragment_source << std::endl;
+		ss << "Error opening file: " << fragment_source << std::endl;
 	}
 	std::string fragment_code(std::istreambuf_iterator<char>(fragment), (std::istreambuf_iterator<char>()));
 	fragment.close();
@@ -71,22 +77,21 @@ Shader Resource_Manager::loadShaderFromFile(const char * vertex_source, const ch
 	{
 		geometry.open(geometry_source, std::ios_base::in);
 		if (!geometry.is_open()) {
-			std::cerr << "Error opening file: " << geometry_source << std::endl;
+			ss << "Error opening file: " << geometry_source << std::endl;
 		}
 		std::string geometry_code(std::istreambuf_iterator<char>(geometry), (std::istreambuf_iterator<char>()));
 		geometry.close();
-		shader.Compile(vertex_code.c_str(), fragment_code.c_str(), geometry_code.c_str());
+		shader.Compile(vertex_code.c_str(), fragment_code.c_str(), geometry_code.c_str(), ss);
 	}
 	else
 	{
-		shader.Compile(vertex_code.c_str(), fragment_code.c_str(), nullptr);
+		shader.Compile(vertex_code.c_str(), fragment_code.c_str(), nullptr, ss);
 	}
-	
 
 	return shader;
 }
 
-Texture2D Resource_Manager::loadTextureFromFile(const char * file)
+Texture2D Resource_Manager::loadTextureFromFile(const char * file, std::stringstream &ss)
 {
 	Texture2D texture;
 
@@ -94,7 +99,7 @@ Texture2D Resource_Manager::loadTextureFromFile(const char * file)
 
 	unsigned char* image = SOIL_load_image(file, &width, &height, 0, SOIL_LOAD_RGBA);
 	if (image == 0) {
-		std::cerr << "Error opening: " << file << std::endl;
+		ss << "Error opening: " << file << std::endl;
 	}
 	texture.Generate(width, height, image);
 	SOIL_free_image_data(image);
