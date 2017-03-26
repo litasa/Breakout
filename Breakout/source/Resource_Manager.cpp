@@ -5,7 +5,8 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
-#include <SOIL.h>
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 
 
 //instanciate static variables
@@ -97,11 +98,11 @@ Texture2D Resource_Manager::loadTextureFromFile(const char * file, std::stringst
 
 	int width, height;
 
-	unsigned char* image = SOIL_load_image(file, &width, &height, 0, SOIL_LOAD_RGBA);
+	unsigned char* image = stbi_load(file, &width, &height, 0, STBI_rgb_alpha);
 	if (image == 0) {
 		ss << "Error opening: " << file << std::endl;
 	}
 	texture.Generate(width, height, image);
-	SOIL_free_image_data(image);
+	stbi_image_free(image);
 	return texture;
 }

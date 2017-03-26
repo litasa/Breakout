@@ -22,7 +22,7 @@ void Particle_Generator::Update(float dt, Game_Object & object, unsigned int new
 		if (p._lifetime > 0.0f)
 		{
 			p._position -= p._velocity*dt;
-			p._color.a -= dt*2.5;
+			p._color.a -= dt*2.5f;
 		}
 	}
 }
@@ -111,7 +111,7 @@ void Particle_Generator::respawnParticle(Particle & particle, Game_Object & obje
 {
 	//TODO: this information should be inside the specific particle
 	GLfloat random = ((rand() % 100) - 50) / 10.0f;
-	GLfloat rColor = 0.5 + ((rand() % 100) / 100.0f);
+	GLfloat rColor = 0.5f + ((rand() % 100) / 100.0f);
 	particle._position = object._position + random + offset;
 	particle._color= glm::vec4(rColor, rColor, rColor, 1.0f);
 	particle._lifetime = 1.0f;

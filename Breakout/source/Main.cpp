@@ -1,5 +1,4 @@
 
-#define GLEW_STATIC
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
 #include "Resource_Manager.h"
@@ -39,14 +38,14 @@ int main() {
 
 	BreakOut.Init();
 
-	double delta_time = 0.0f;
-	double last_frame = 0.0f;
+	float delta_time = 0.0f;
+	float last_frame = 0.0f;
 
 	BreakOut._state = Game::State::ACTIVE;
 
 	while (!glfwWindowShouldClose(window))
 	{
-		double current_frame = glfwGetTime();
+		float current_frame = float(glfwGetTime());
 		delta_time = current_frame - last_frame;
 		last_frame = current_frame;
 		glfwPollEvents();

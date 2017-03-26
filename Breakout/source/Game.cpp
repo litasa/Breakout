@@ -154,7 +154,7 @@ void Game::Render()
 		this->_particle_generator->Draw();
 
 		_special_effects->EndRender();
-		_special_effects->Render(glfwGetTime());
+		_special_effects->Render(float(glfwGetTime()));
 	}
 }
 
