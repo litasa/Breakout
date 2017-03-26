@@ -51,6 +51,9 @@
     <ClCompile Include="source\Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\Post_Processor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\Resource_Manager.h">
@@ -81,6 +84,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="source\Game.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Post_Processor.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

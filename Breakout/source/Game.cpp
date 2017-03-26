@@ -21,39 +21,41 @@ Game::~Game()
 void Game::Init()
 {
 	//load shaders
-	Resource_Manager::LoadShader("./data/shaders/sprite.vertex", "./data/shaders/sprite.fragment", nullptr, "sprite");
+	Resource_Manager::LoadShader("sprite", "./data/shaders/sprite.vertex", "./data/shaders/sprite.fragment", nullptr);
+	Resource_Manager::LoadShader("postprocessing", "./data/shaders/effects.vertex", "./data/shaders/effects.fragment", nullptr);
+	Resource_Manager::LoadShader("particle", "./data/shaders/particle.vertex", "./data/shaders/particle.fragment", nullptr);
 
+	//setup shaders
 	glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(this->_width), static_cast<float>(this->_height), 0.0f, -1.0f, 1.0f);
-	Resource_Manager::GetShader("sprite").Use().setInteger("image", 0);
+
+	Resource_Manager::GetShader("sprite").Use().setInteger("sprite_texture", 0); //sampler2D
 	Resource_Manager::GetShader("sprite").setMatrix4("projection", projection);
 
-	_sprite_renderer = new Sprite_Renderer(Resource_Manager::GetShader("sprite"));
-
-	//Paddle related
-	Resource_Manager::LoadTexture("./data/textures/paddle.png", "paddle");
-	glm::vec2 playerPos = glm::vec2(
-		(this->_width - PLAYER_SIZE.x) / 2,
-		this->_height - PLAYER_SIZE.y
-	);
-	_player = new Game_Object(playerPos, PLAYER_SIZE, Resource_Manager::GetTexture("paddle"));
-	
-	Resource_Manager::LoadTexture("./data/textures/awesomeface.png", "face");
-	glm::vec2 ball_pos = playerPos + glm::vec2(PLAYER_SIZE.x / 2 - BALL_RADIUS, -BALL_RADIUS * 2);
-	_ball = new Ball_Object(ball_pos, BALL_RADIUS, INITIAL_BALL_VELOCITY, Resource_Manager::GetTexture("face"));
-
-	//particles
-	Resource_Manager::LoadShader("./data/shaders/particle.vertex", "./data/shaders/particle.fragment", nullptr, "particle");
-	Resource_Manager::GetShader("particle").Use().setInteger("sprite", 0);
+	Resource_Manager::GetShader("particle").Use().setInteger("sprite_texture", 0); //sampler2D
 	Resource_Manager::GetShader("particle").setMatrix4("projection", projection);
-	Resource_Manager::LoadTexture("./data/textures/particle.png", "particle");
+
+	Resource_Manager::GetShader("postprocessing").Use().setInteger("scene", 0); //sampler2D
+	Resource_Manager::GetShader("postprocessing").setMatrix4("projection", projection);
+	
+	//load textures
+	Resource_Manager::LoadTexture("background", "./data/textures/background.jpg");
+	Resource_Manager::LoadTexture("block", "./data/textures/block.png");
+	Resource_Manager::LoadTexture("block_solid", "./data/textures/block_solid.png");
+	Resource_Manager::LoadTexture("particle", "./data/textures/particle.png");
+	Resource_Manager::LoadTexture("paddle", "./data/textures/paddle.png");
+	Resource_Manager::LoadTexture("ball", "./data/textures/awesomeface.png");
+
+	//setup extra systems
+	_sprite_renderer = new Sprite_Renderer(Resource_Manager::GetShader("sprite"));
+	_special_effects = new Post_Processor(Resource_Manager::GetShader("postprocessing"), this->_width, this->_height);
 	_particle_generator = new Particle_Generator(
 		Resource_Manager::GetShader("particle"),
 		Resource_Manager::GetTexture("particle"),
 		500);
-	//brick textures
-	Resource_Manager::LoadTexture("./data/textures/background.jpg", "background");
-	Resource_Manager::LoadTexture("./data/textures/block.png", "block");
-	Resource_Manager::LoadTexture("./data/textures/block_solid.png", "block_solid");
+	
+	_player = new Game_Object(glm::vec2(0,0), PLAYER_SIZE, Resource_Manager::GetTexture("paddle"));
+	_ball = new Ball_Object(glm::vec2(0,0), BALL_RADIUS, INITIAL_BALL_VELOCITY, Resource_Manager::GetTexture("ball"));
+	this->ResetPlayer();
 
 	//load levels
 	unsigned int half_height = unsigned(this->_height*0.5);
@@ -65,7 +67,7 @@ void Game::Init()
 	this->_levels.push_back(two);
 	this->_levels.push_back(three);
 	this->_levels.push_back(four);
-	this->_current_level = 1;
+	this->_current_level = 0;
 }
 
 void Game::ProcessInput(float dt)
@@ -126,12 +128,21 @@ void Game::Update(float dt)
 		this->ResetPlayer();
 		this->_state = State::MENU;
 	}
+	if (_shake_time > 0.0f)
+	{
+		_shake_time -= dt;
+		if (_shake_time <= 0.0f)
+		{
+			_special_effects->_shake = false;
+		}
+	}
 }
 
 void Game::Render()
 {
 	if (this->_state == State::ACTIVE)
 	{
+		_special_effects->BeginRender();
 		_sprite_renderer->DrawSprite(Resource_Manager::GetTexture("background"),
 			glm::vec2(0, 0), glm::vec2(this->_width, this->_height), 0);
 
@@ -141,6 +152,9 @@ void Game::Render()
 		this->_ball->Draw(*_sprite_renderer);
 
 		this->_particle_generator->Draw();
+
+		_special_effects->EndRender();
+		_special_effects->Render(glfwGetTime());
 	}
 }
 
@@ -234,6 +248,11 @@ void Game::PerformCollision()
 				if (!brick._is_solid)
 				{
 					brick._destroyed = true;
+				}
+				else
+				{
+					_shake_time = 0.05f;
+					_special_effects->_shake = true;
 				}
 				Direction dir = std::get<1>(collision);
 				glm::vec2 diff = std::get<2>(collision);

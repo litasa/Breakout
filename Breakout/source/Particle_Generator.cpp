@@ -39,7 +39,6 @@ void Particle_Generator::Draw()
 		{
 			this->_shader.setVec2("offset", particle._position);
 			this->_shader.setVec4("color", particle._color);
-			this->_shader.setFloat("scale", 10.0f);
 			this->_texture.Bind();
 			glBindVertexArray(this->VAO);
 			glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -114,7 +113,7 @@ void Particle_Generator::respawnParticle(Particle & particle, Game_Object & obje
 	GLfloat random = ((rand() % 100) - 50) / 10.0f;
 	GLfloat rColor = 0.5 + ((rand() % 100) / 100.0f);
 	particle._position = object._position + random + offset;
-	particle._color = glm::vec4(rColor, rColor, rColor, 1.0f);
+	particle._color= glm::vec4(rColor, rColor, rColor, 1.0f);
 	particle._lifetime = 1.0f;
-	particle._velocity = object._velocity * 0.1f;
+	particle._velocity = object._velocity* 0.1f;
 }

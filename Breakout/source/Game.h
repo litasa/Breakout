@@ -3,6 +3,7 @@
 #include "Game_Level.h"
 #include "Ball_Object.h"
 #include "Particle_Generator.h"
+#include "Post_Processor.h"
 
 class Game
 {
@@ -46,13 +47,14 @@ public:
 
 private:
 	Sprite_Renderer* _sprite_renderer;
+	Post_Processor* _special_effects;
 
 	const glm::vec2 PLAYER_SIZE = glm::vec2(100.0f, 20.0f);
 	const float PLAYER_VELOCITY = float(500.0f);
 
 	// Initial velocity of the Ball
 	const glm::vec2 INITIAL_BALL_VELOCITY = glm::vec2(100.0f, -350.0f);
-	const float BALL_RADIUS = 20;
+	const float BALL_RADIUS = 12.5f;
 
 	// AABB - AABB collision
 	bool checkCollision(Game_Object &first, Game_Object &second);
@@ -67,5 +69,7 @@ private:
 	Direction VectorHitDirection(glm::vec2 target);
 
 	void PerformCollision();
+
+	float _shake_time = 0;
 };
 
