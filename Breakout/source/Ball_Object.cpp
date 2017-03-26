@@ -1,7 +1,7 @@
 #include "Ball_Object.h"
 
 Ball_Object::Ball_Object(glm::vec2 pos, float radius, glm::vec2 velocity, Texture2D sprite)
-	: Game_Object(pos, glm::vec2(radius), sprite, glm::vec3(1), velocity), _radius(radius), _stuck_to_paddle(true)
+	: Game_Object(pos, glm::vec2(2*radius), sprite, glm::vec3(1), velocity), _radius(radius), _stuck_to_paddle(true)
 {
 }
 
