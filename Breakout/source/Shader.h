@@ -19,19 +19,19 @@ public:
 	Shader &Use();
 	void Compile(const char* vertex_source, const char* fragment_source, const char* geometry_source, std::stringstream& ss);
 
-	void setFloat(const char* variable, float value, bool use_shader = false);
-	void setInteger(const char* variable, int value, bool use_shader = false);
+	void setFloat(const char* variable, float value);
+	void setInteger(const char* variable, int value);
 
-	void setVec2(const char* variable, glm::vec2& vec, bool use_shader = false);
-	void setVec2(const char* variable, float x, float y, bool use_shader = false);
+	void setVec2(const char* variable, glm::vec2& vec);
+	void setVec2(const char* variable, float x, float y);
 
-	void setVec3(const char* variable, glm::vec3& vec, bool use_shader = false);
-	void setVec3(const char* variable, float x, float y, float z, bool use_shader = false);
+	void setVec3(const char* variable, glm::vec3& vec);
+	void setVec3(const char* variable, float x, float y, float z);
 
-	void setVec4(const char* variable, glm::vec4& vec, bool use_shader = false);
-	void setVec4(const char* variable, float x, float y, float z, float w, bool use_shader = false);
+	void setVec4(const char* variable, glm::vec4& vec);
+	void setVec4(const char* variable, float x, float y, float z, float w);
 
-	void setMatrix4(const char* variable, const glm::mat4& mat, bool use_shader = false);
+	void setMatrix4(const char* variable, const glm::mat4& mat);
 
 private:
 	enum class CHECK

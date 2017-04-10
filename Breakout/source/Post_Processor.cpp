@@ -32,8 +32,9 @@ Post_Processor::Post_Processor(Shader shader, unsigned int width, unsigned int h
 
 
 	this->initRenderData();
-	this->_shader.setInteger("scene", 0, true);
-	float offset = 1.0f / 500.0f;
+	this->_shader.Use();
+	this->_shader.setInteger("scene", 0);
+	float offset = 1.0f / 500.0f; //some nice number at random
 	float offsets[9][2] = {
 		{ -offset,  offset },  // top-left
 		{ 0.0f,    offset },  // top-center

@@ -4,6 +4,13 @@
 #include "Ball_Object.h"
 #include "Particle_Generator.h"
 #include "Post_Processor.h"
+#include <irrKlang.h>
+#include "Text_Renderer.h"
+
+#include "Sprite.h"
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 class Game
 {
@@ -30,7 +37,8 @@ public:
 	{
 		ACTIVE,
 		MENU,
-		WIN
+		WIN,
+		LOOSE
 	};
 
 	//states
@@ -43,11 +51,16 @@ public:
 
 	Game_Object* _player;
 	Ball_Object* _ball;
-	Particle_Generator* _particle_generator;
+	Sprite* _grant;
+	
+	int lives;
 
 private:
 	Sprite_Renderer* _sprite_renderer;
 	Post_Processor* _special_effects;
+	Particle_Generator* _particle_generator;
+	irrklang::ISoundEngine *_sound_engine;
+	Text_Renderer* _text_renderer;
 
 	const glm::vec2 PLAYER_SIZE = glm::vec2(100.0f, 20.0f);
 	const float PLAYER_VELOCITY = float(500.0f);

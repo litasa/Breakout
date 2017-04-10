@@ -4,9 +4,10 @@
 #include <GLFW\glfw3.h>
 
 #include <glm\gtc\matrix_transform.hpp>
+#include <iostream>
 
 Game::Game(unsigned int width, unsigned int height)
-	:
+	: lives(3),
 	_state(State::ACTIVE),
 	_width(width),
 	_height(height)
@@ -16,6 +17,13 @@ Game::Game(unsigned int width, unsigned int height)
 
 Game::~Game()
 {
+	delete _player;
+	delete _ball;
+	delete _particle_generator;
+	delete _sprite_renderer;
+	delete _special_effects;
+	_sound_engine->drop(); //deletes the sound engine
+	delete _text_renderer;
 }
 
 void Game::Init()
@@ -24,6 +32,7 @@ void Game::Init()
 	Resource_Manager::LoadShader("sprite", "./data/shaders/sprite.vertex", "./data/shaders/sprite.fragment", nullptr);
 	Resource_Manager::LoadShader("postprocessing", "./data/shaders/effects.vertex", "./data/shaders/effects.fragment", nullptr);
 	Resource_Manager::LoadShader("particle", "./data/shaders/particle.vertex", "./data/shaders/particle.fragment", nullptr);
+	Resource_Manager::LoadShader("text", "./data/shaders/text.vertex", "./data/shaders/text.fragment", nullptr);
 
 	//setup shaders
 	glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(this->_width), static_cast<float>(this->_height), 0.0f, -1.0f, 1.0f);
@@ -44,6 +53,7 @@ void Game::Init()
 	Resource_Manager::LoadTexture("particle", "./data/textures/particle.png");
 	Resource_Manager::LoadTexture("paddle", "./data/textures/paddle.png");
 	Resource_Manager::LoadTexture("ball", "./data/textures/awesomeface.png");
+	Resource_Manager::LoadTexture("grant", "./data/textures/runningGrant.png");
 
 	//setup extra systems
 	_sprite_renderer = new Sprite_Renderer(Resource_Manager::GetShader("sprite"));
@@ -52,9 +62,24 @@ void Game::Init()
 		Resource_Manager::GetShader("particle"),
 		Resource_Manager::GetTexture("particle"),
 		500);
-	
+	_sound_engine = irrklang::createIrrKlangDevice();
+	_text_renderer = new Text_Renderer(this->_width, this->_height);
+
+	//init sound engine
+	if (!_sound_engine) {
+		std::cerr << "Error starting up sound engine" << std::endl;
+	}
+	//_sound_engine->play2D("./data/sound/Helena_Jakob.wav", true); //setup looping background music Should load as levels are loaded
+
+	//init text
+	_text_renderer->Load("./data/fonts/OCRAEXT.TTF", 24);
+
 	_player = new Game_Object(glm::vec2(0,0), PLAYER_SIZE, Resource_Manager::GetTexture("paddle"));
 	_ball = new Ball_Object(glm::vec2(0,0), BALL_RADIUS, INITIAL_BALL_VELOCITY, Resource_Manager::GetTexture("ball"));
+	_grant = new Sprite();
+	_grant->_sprite_sheet = Resource_Manager::GetTexture("grant");
+	_grant->_position_in_texture = glm::vec2(0, 0);
+	_grant->_size_of_sprite = glm::vec2(160, 300);
 	this->ResetPlayer();
 
 	//load levels
@@ -99,6 +124,11 @@ void Game::ProcessInput(float dt)
 			}
 		}
 
+		if (this->_keys[GLFW_KEY_1])
+		{
+			_grant->_position_in_texture.x += 160;
+		}
+
 
 		if (this->_keys[GLFW_KEY_SPACE])
 		{
@@ -116,33 +146,49 @@ void Game::ProcessInput(float dt)
 
 void Game::Update(float dt)
 {
-	_ball->Move(dt, this->_width);
-
-	this->PerformCollision();
-
-	this->_particle_generator->Update(dt, *_ball, 2, glm::vec2(_ball->_radius/2,_ball->_radius/2));
-
-	if (_ball->_position.y >= this->_height) // Did ball reach bottom edge?
+	if (_state == State::ACTIVE && this->_levels[this->_current_level].Is_Completed())
 	{
 		this->ResetLevel();
 		this->ResetPlayer();
-		this->_state = State::MENU;
+		this->_state = State::WIN;
 	}
-	if (_shake_time > 0.0f)
+	if (_state == State::ACTIVE)
 	{
-		_shake_time -= dt;
-		if (_shake_time <= 0.0f)
+		_ball->Move(dt, this->_width);
+
+		this->PerformCollision();
+
+		this->_particle_generator->Update(dt, *_ball, 2, glm::vec2(_ball->_radius / 2, _ball->_radius / 2));
+
+		if (_ball->_position.y >= this->_height) // Did ball reach bottom edge?
 		{
-			_special_effects->_shake = false;
+			this->ResetLevel();
+			this->ResetPlayer();
+			--this->lives;
+			if (this->lives == 0)
+			{
+				this->_state = State::LOOSE;
+			}
+		}
+		if (_shake_time > 0.0f)
+		{
+			_shake_time -= dt;
+			if (_shake_time <= 0.0f)
+			{
+				_special_effects->_shake = false;
+			}
 		}
 	}
+	
 }
 
 void Game::Render()
 {
 	if (this->_state == State::ACTIVE)
 	{
+		
 		_special_effects->BeginRender();
+		/*
 		_sprite_renderer->DrawSprite(Resource_Manager::GetTexture("background"),
 			glm::vec2(0, 0), glm::vec2(this->_width, this->_height), 0);
 
@@ -150,11 +196,28 @@ void Game::Render()
 
 		this->_player->Draw(*_sprite_renderer);
 		this->_ball->Draw(*_sprite_renderer);
+		*/
+		/*_sprite_renderer->DrawSprite(Resource_Manager::GetTexture("grant"),
+			glm::vec2(0, 0), glm::vec2(this->_width, this->_height), 0);*/
 
-		this->_particle_generator->Draw();
+		_sprite_renderer->DrawAnimatedSprite(*_grant, glm::vec2(0, 0));
+
+
+		//this->_particle_generator->Draw();
 
 		_special_effects->EndRender();
 		_special_effects->Render(float(glfwGetTime()));
+
+		std::stringstream ss; ss << this->lives;
+		_text_renderer->RenderText("Lives:" + ss.str(), 5.0f, 5.0f, 1.0f);
+	}
+	else if (this->_state == State::WIN)
+	{
+		_text_renderer->RenderText("You Won", _width / 2, _height / 2);
+	}
+	else if (this->_state == State::LOOSE)
+	{
+		_text_renderer->RenderText("You Lost", _width / 2, _height / 2);
 	}
 }
 
@@ -248,12 +311,16 @@ void Game::PerformCollision()
 				if (!brick._is_solid)
 				{
 					brick._destroyed = true;
+					this->_sound_engine->play2D("./data/sound/bleep.mp3");
 				}
 				else
 				{
 					_shake_time = 0.05f;
 					_special_effects->_shake = true;
+					this->_sound_engine->play2D("./data/sound/solid.wav");
 				}
+
+				
 				Direction dir = std::get<1>(collision);
 				glm::vec2 diff = std::get<2>(collision);
 
@@ -301,6 +368,7 @@ void Game::PerformCollision()
 				_ball->_velocity = glm::normalize(_ball->_velocity) * glm::length(old_velocity);
 
 				_ball->_velocity.y = -1 * abs(_ball->_velocity.y);
+				this->_sound_engine->play2D("./data/sound/bleep.wav", false);
 			}
 		}
 	}

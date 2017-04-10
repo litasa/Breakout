@@ -58,57 +58,49 @@ void Shader::Compile(const char * vertex_source, const char * fragment_source, c
 	}
 }
 
-void Shader::setFloat(const char * variable, float value, bool use_shader)
+void Shader::setFloat(const char * variable, float value)
 {
 	glUniform1f(glGetUniformLocation(this->ID, variable), value);
 }
 
-void Shader::setInteger(const char * variable, int value, bool use_shader)
+void Shader::setInteger(const char * variable, int value)
 {
 	glUniform1i(glGetUniformLocation(this->ID, variable), value);
-
 }
 
-void Shader::setVec2(const char * variable, glm::vec2 & vec, bool use_shader)
+void Shader::setVec2(const char * variable, glm::vec2 & vec)
 {
 	glUniform2f(glGetUniformLocation(this->ID, variable), vec.x, vec.y);
-
 }
 
-void Shader::setVec2(const char * variable, float x, float y, bool use_shader)
+void Shader::setVec2(const char * variable, float x, float y)
 {
 	glUniform2f(glGetUniformLocation(this->ID, variable), x, y);
-
 }
 
-void Shader::setVec3(const char * variable, glm::vec3 & vec, bool use_shader)
+void Shader::setVec3(const char * variable, glm::vec3 & vec)
 {
 	glUniform3f(glGetUniformLocation(this->ID, variable), vec.x, vec.y, vec.z);
-
 }
 
-void Shader::setVec3(const char * variable, float x, float y, float z, bool use_shader)
+void Shader::setVec3(const char * variable, float x, float y, float z)
 {
 	glUniform3f(glGetUniformLocation(this->ID, variable), x, y, z);
-
 }
 
-void Shader::setVec4(const char * variable, glm::vec4 & vec, bool use_shader)
+void Shader::setVec4(const char * variable, glm::vec4 & vec)
 {
 	glUniform4f(glGetUniformLocation(this->ID, variable), vec.x, vec.y, vec.z, vec.w);
-
 }
 
-void Shader::setVec4(const char * variable, float x, float y, float z, float w, bool use_shader)
+void Shader::setVec4(const char * variable, float x, float y, float z, float w)
 {
 	glUniform4f(glGetUniformLocation(this->ID, variable), x, y, z, w);
-
 }
 
-void Shader::setMatrix4(const char * variable, const glm::mat4 & mat, bool use_shader)
+void Shader::setMatrix4(const char * variable, const glm::mat4 & mat)
 {
 	glUniformMatrix4fv(glGetUniformLocation(this->ID, variable), 1, GL_FALSE, glm::value_ptr(mat));
-
 }
 
 void Shader::checkCompileErrors(GLuint object, CHECK type, std::stringstream &ss)

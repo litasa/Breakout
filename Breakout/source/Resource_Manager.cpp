@@ -20,9 +20,11 @@ Resource_Manager::~Resource_Manager()
 Shader Resource_Manager::LoadShader(std::string name, const char * vertex_source, const char * fragment_source, const char * geometry_source)
 {
 	std::stringstream ss;
-	ss << "Loading: " << name << " ";
 	Shaders[name] = loadShaderFromFile(vertex_source, fragment_source, geometry_source, ss);
-	std::cout << ss.str() << std::endl;
+	if (ss.rdbuf()->in_avail() != NULL)
+	{
+		std::cout << "loadShader " << name << " failed: " << ss.str() << std::endl;
+	}
 	return Shaders[name];
 }
 
@@ -35,7 +37,10 @@ Texture2D Resource_Manager::LoadTexture(std::string name, const char * file)
 {
 	std::stringstream ss;
 	Textures[name] = loadTextureFromFile(file, ss);
-	std::cout << ss.str() << std::endl;
+	if (ss.rdbuf()->in_avail() != NULL)
+	{
+		std::cout << "loadTexture " << name << " failed: " << ss.str() << std::endl;
+	}
 	return Textures[name];
 }
 
