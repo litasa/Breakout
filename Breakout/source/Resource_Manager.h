@@ -14,10 +14,10 @@ public:
 	static std::unordered_map<std::string, Texture2D> Textures;
 
 	static Shader LoadShader(std::string name, const char* vertex_source, const char* fragment_source, const char* geometry_source);
-	static Shader GetShader(std::string name);
+	static Shader& GetShader(std::string name);
 
 	static Texture2D LoadTexture(std::string name, const char* file);
-	static Texture2D GetTexture(std::string name);
+	static Texture2D& GetTexture(std::string name);
 
 	static void Clear();
 

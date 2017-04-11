@@ -30,7 +30,7 @@
     <ClCompile Include="source\Resource_Manager.cpp" />
     <ClCompile Include="source\Shader.cpp" />
     <ClCompile Include="source\Sprite.cpp" />
-    <ClCompile Include="source\Sprite_Renderer.cpp" />
+    <ClCompile Include="source\Sprite_Manager.cpp" />
     <ClCompile Include="source\Texture2D.cpp" />
     <ClCompile Include="source\Text_Renderer.cpp" />
   </ItemGroup>
@@ -45,7 +45,7 @@
     <ClInclude Include="source\Resource_Manager.h" />
     <ClInclude Include="source\Shader.h" />
     <ClInclude Include="source\Sprite.h" />
-    <ClInclude Include="source\Sprite_Renderer.h" />
+    <ClInclude Include="source\Sprite_Manager.h" />
     <ClInclude Include="source\Texture2D.h" />
     <ClInclude Include="source\Text_Renderer.h" />
   </ItemGroup>

@@ -20,7 +20,7 @@ Game::~Game()
 	delete _player;
 	delete _ball;
 	delete _particle_generator;
-	delete _sprite_renderer;
+	delete _sprite_manager;
 	delete _special_effects;
 	_sound_engine->drop(); //deletes the sound engine
 	delete _text_renderer;
@@ -56,7 +56,7 @@ void Game::Init()
 	Resource_Manager::LoadTexture("grant", "./data/textures/runningGrant.png");
 
 	//setup extra systems
-	_sprite_renderer = new Sprite_Renderer(Resource_Manager::GetShader("sprite"));
+	_sprite_manager = new Sprite_Manager(Resource_Manager::GetShader("sprite"));
 	_special_effects = new Post_Processor(Resource_Manager::GetShader("postprocessing"), this->_width, this->_height);
 	_particle_generator = new Particle_Generator(
 		Resource_Manager::GetShader("particle"),
@@ -76,10 +76,7 @@ void Game::Init()
 
 	_player = new Game_Object(glm::vec2(0,0), PLAYER_SIZE, Resource_Manager::GetTexture("paddle"));
 	_ball = new Ball_Object(glm::vec2(0,0), BALL_RADIUS, INITIAL_BALL_VELOCITY, Resource_Manager::GetTexture("ball"));
-	_grant = new Sprite();
-	_grant->_sprite_sheet = Resource_Manager::GetTexture("grant");
-	_grant->_position_in_texture = glm::vec2(0, 0);
-	_grant->_size_of_sprite = glm::vec2(160, 300);
+	_sprite_manager->AddSprite("grant", &Resource_Manager::GetTexture("grant"), "nullstr");
 	this->ResetPlayer();
 
 	//load levels
@@ -124,12 +121,6 @@ void Game::ProcessInput(float dt)
 			}
 		}
 
-		if (this->_keys[GLFW_KEY_1])
-		{
-			_grant->_position_in_texture.x += 160;
-		}
-
-
 		if (this->_keys[GLFW_KEY_SPACE])
 		{
 			_ball->_stuck_to_paddle = false;
@@ -159,6 +150,7 @@ void Game::Update(float dt)
 		this->PerformCollision();
 
 		this->_particle_generator->Update(dt, *_ball, 2, glm::vec2(_ball->_radius / 2, _ball->_radius / 2));
+		this->_sprite_manager->Update(dt);
 
 		if (_ball->_position.y >= this->_height) // Did ball reach bottom edge?
 		{
@@ -189,19 +181,19 @@ void Game::Render()
 		
 		_special_effects->BeginRender();
 		/*
-		_sprite_renderer->DrawSprite(Resource_Manager::GetTexture("background"),
+		_sprite_manager->DrawSprite(Resource_Manager::GetTexture("background"),
 			glm::vec2(0, 0), glm::vec2(this->_width, this->_height), 0);
 
-		this->_levels[this->_current_level].Draw(*_sprite_renderer);
+		this->_levels[this->_current_level].Draw(*_sprite_manager);
 
-		this->_player->Draw(*_sprite_renderer);
-		this->_ball->Draw(*_sprite_renderer);
+		this->_player->Draw(*_sprite_manager);
+		this->_ball->Draw(*_sprite_manager);
 		*/
-		/*_sprite_renderer->DrawSprite(Resource_Manager::GetTexture("grant"),
+		/*_sprite_manager->DrawSprite(Resource_Manager::GetTexture("grant"),
 			glm::vec2(0, 0), glm::vec2(this->_width, this->_height), 0);*/
 
-		_sprite_renderer->DrawAnimatedSprite(*_grant, glm::vec2(0, 0));
-
+		//_sprite_manager->DrawAnimatedSprite(*_grant, glm::vec2(0, 0));
+		_sprite_manager->Draw();
 
 		//this->_particle_generator->Draw();
 
@@ -213,11 +205,11 @@ void Game::Render()
 	}
 	else if (this->_state == State::WIN)
 	{
-		_text_renderer->RenderText("You Won", _width / 2, _height / 2);
+		_text_renderer->RenderText("You Won", float(_width / 2), float(_height / 2));
 	}
 	else if (this->_state == State::LOOSE)
 	{
-		_text_renderer->RenderText("You Lost", _width / 2, _height / 2);
+		_text_renderer->RenderText("You Lost", float(_width / 2), float(_height / 2));
 	}
 }
 

@@ -2,7 +2,7 @@
 
 #include <glm\vec2.hpp>
 #include "Texture2D.h"
-#include "Sprite_Renderer.h"
+#include "Sprite_Manager.h"
 class Game_Object
 {
 public:
@@ -22,5 +22,5 @@ public:
 
 	Texture2D _sprite;
 
-	virtual void Draw(Sprite_Renderer &render);
+	virtual void Draw(Sprite_Manager &render);
 };

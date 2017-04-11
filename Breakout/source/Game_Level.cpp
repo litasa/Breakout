@@ -38,7 +38,7 @@ void Game_Level::Load(const char * file, unsigned int level_width, unsigned int 
 	}
 }
 
-void Game_Level::Draw(Sprite_Renderer & renderer)
+void Game_Level::Draw(Sprite_Manager & renderer)
 {
 	for (Brick &tile : this->_bricks)
 	{

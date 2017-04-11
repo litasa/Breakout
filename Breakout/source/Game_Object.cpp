@@ -14,7 +14,7 @@ Game_Object::~Game_Object()
 {
 }
 
-void Game_Object::Draw(Sprite_Renderer & render)
+void Game_Object::Draw(Sprite_Manager & render)
 {
 	render.DrawSprite(this->_sprite, this->_position, this->_size, this->_rotation, this->_color);
 }

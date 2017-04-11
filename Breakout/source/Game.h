@@ -1,5 +1,5 @@
 #pragma once
-#include "Sprite_Renderer.h"
+#include "Sprite_Manager.h"
 #include "Game_Level.h"
 #include "Ball_Object.h"
 #include "Particle_Generator.h"
@@ -56,7 +56,7 @@ public:
 	int lives;
 
 private:
-	Sprite_Renderer* _sprite_renderer;
+	Sprite_Manager* _sprite_manager;
 	Post_Processor* _special_effects;
 	Particle_Generator* _particle_generator;
 	irrklang::ISoundEngine *_sound_engine;

@@ -10,7 +10,7 @@ public:
 
 	void Load(const char* file, unsigned int level_width, unsigned int level_height);
 
-	void Draw(Sprite_Renderer &renderer);
+	void Draw(Sprite_Manager &renderer);
 
 	bool Is_Completed();
 
