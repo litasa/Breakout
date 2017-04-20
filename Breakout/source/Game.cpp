@@ -133,6 +133,17 @@ void Game::ProcessInput(float dt)
 			this->_state = State::ACTIVE;
 		}
 	}
+
+
+	if (this->_keys[GLFW_KEY_P] && this->_state != State::MENU)
+	{
+			this->_last_state = this->_state;
+			this->_state = State::MENU;
+	}
+	else if (this->_keys[GLFW_KEY_P] && this->_state == State::MENU)
+	{
+		this->_state = this->_last_state;
+	}
 }
 
 void Game::Update(float dt)
@@ -180,7 +191,7 @@ void Game::Render()
 	{
 		
 		_special_effects->BeginRender();
-		/*
+		
 		_sprite_manager->DrawSprite(Resource_Manager::GetTexture("background"),
 			glm::vec2(0, 0), glm::vec2(this->_width, this->_height), 0);
 
@@ -188,14 +199,14 @@ void Game::Render()
 
 		this->_player->Draw(*_sprite_manager);
 		this->_ball->Draw(*_sprite_manager);
-		*/
+		
 		/*_sprite_manager->DrawSprite(Resource_Manager::GetTexture("grant"),
 			glm::vec2(0, 0), glm::vec2(this->_width, this->_height), 0);*/
 
 		//_sprite_manager->DrawAnimatedSprite(*_grant, glm::vec2(0, 0));
-		_sprite_manager->Draw();
+		//_sprite_manager->Draw();
 
-		//this->_particle_generator->Draw();
+		this->_particle_generator->Draw();
 
 		_special_effects->EndRender();
 		_special_effects->Render(float(glfwGetTime()));
@@ -210,6 +221,10 @@ void Game::Render()
 	else if (this->_state == State::LOOSE)
 	{
 		_text_renderer->RenderText("You Lost", float(_width / 2), float(_height / 2));
+	}
+	else if (this->_state == State::MENU)
+	{
+		_text_renderer->RenderText("This is the meny", float(_width / 2), float(_height / 2));
 	}
 }
 

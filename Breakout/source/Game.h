@@ -43,6 +43,7 @@ public:
 
 	//states
 	State _state;
+	State _last_state;
 	bool _keys[1024];
 	unsigned int _width, _height;
 
