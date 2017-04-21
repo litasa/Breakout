@@ -38,7 +38,8 @@ public:
 		ACTIVE,
 		MENU,
 		WIN,
-		LOOSE
+		LOOSE,
+		GAME_OVER_WIN
 	};
 
 	//states

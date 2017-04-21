@@ -89,12 +89,12 @@ void Game::Init()
 	Game_Level one;   one.Load  ("./data/levels/level_1.txt", this->_width, half_height);
 	Game_Level two;	  two.Load  ("./data/levels/level_2.txt", this->_width, half_height);
 	Game_Level three; three.Load("./data/levels/level_3.txt", this->_width, half_height);
-	Game_Level four;  four.Load ("./data/levels/level_4.txt", this->_width, half_height);
+	Game_Level four;  four.Load ("./data/levels/level_1.txt", this->_width, half_height);
 	this->_levels.push_back(one);
 	this->_levels.push_back(two);
 	this->_levels.push_back(three);
 	this->_levels.push_back(four);
-	this->_current_level = 1;
+	this->_current_level = 3;
 }
 
 void Game::ProcessInput(float dt)
@@ -138,6 +138,22 @@ void Game::ProcessInput(float dt)
 			this->_state = State::ACTIVE;
 		}
 	}
+	else if (this->_state == State::WIN)
+	{
+		if (this->_keys[GLFW_KEY_SPACE] && this->_current_level < this->_levels.size())
+		{
+			this->_current_level++;
+			if (this->_current_level == this->_levels.size())
+			{
+				this->_state = State::GAME_OVER_WIN;
+			}
+			else
+			{
+				this->_state = State::ACTIVE;
+				ResetLevel();
+			}	
+		}
+	}
 
 
 	if (this->_keys[GLFW_KEY_P] && this->_state != State::MENU)
@@ -170,7 +186,6 @@ void Game::Update(float dt)
 
 		if (_ball->_position.y >= this->_height) // Did ball reach bottom edge?
 		{
-			this->ResetLevel();
 			this->ResetPlayer();
 			--this->lives;
 			if (this->lives == 0)
@@ -215,7 +230,11 @@ void Game::Render()
 	}
 	else if (this->_state == State::WIN)
 	{
-		_text_renderer->RenderText("You Won", float(_width / 2), float(_height / 2));
+		_text_renderer->RenderText("You Won", float(_width / 2 - 20*3), float(_height / 2 - 20));
+		if (this->_current_level < this->_levels.size())
+		{
+			_text_renderer->RenderText("Press spacebar for next level", float(_width / 2 - 11*20), float(_height / 2 ));
+		}
 	}
 	else if (this->_state == State::LOOSE)
 	{
@@ -224,6 +243,10 @@ void Game::Render()
 	else if (this->_state == State::MENU)
 	{
 		_text_renderer->RenderText("This is the meny", float(_width / 2), float(_height / 2));
+	}
+	else if (this->_state == State::GAME_OVER_WIN)
+	{
+		_text_renderer->RenderText("The game is over. Please like me", float(_width / 2), float(_height / 2));
 	}
 }
 
@@ -272,7 +295,7 @@ void Game::ResetLevel()
 	else if (this->_current_level == 2)
 		this->_levels[2].Load("./data/levels/level_3.txt", this->_width, half_height);
 	else if (this->_current_level == 3)
-		this->_levels[3].Load("./data/levels/level_4.txt", this->_width, half_height);
+		this->_levels[3].Load("./data/levels/level_1.txt", this->_width, half_height);
 }
 
 void Game::ResetPlayer()

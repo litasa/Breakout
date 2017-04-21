@@ -39,6 +39,7 @@ void Ball_Object::Reset(glm::vec2 position, glm::vec2 velocity)
 {
 	this->_position = position;
 	this->_velocity = velocity;
+	this->_stuck_to_paddle = true;
 }
 
 void Ball_Object::Draw(Sprite_Manager & render)
