@@ -53,7 +53,6 @@ void Game::Init()
 	Resource_Manager::LoadTexture("particle", "./data/textures/particle.png");
 	Resource_Manager::LoadTexture("paddle", "./data/textures/paddle.png");
 	Resource_Manager::LoadTexture("ball", "./data/textures/awesomeface.png");
-	Resource_Manager::LoadTexture("grant", "./data/textures/runningGrant.png");
 
 	//load sprites
 	Resource_Manager::LoadSprite("ball", "ball", nullptr);
@@ -83,7 +82,6 @@ void Game::Init()
 
 	_player = new Game_Object(glm::vec2(0,0), PLAYER_SIZE, &Resource_Manager::GetSprite("paddle"));
 	_ball = new Ball_Object(glm::vec2(0,0), BALL_RADIUS, INITIAL_BALL_VELOCITY, &Resource_Manager::GetSprite("ball"));
-	_sprite_manager->AddSprite("grant", &Resource_Manager::GetTexture("grant"), "nullstr");
 	this->ResetPlayer();
 
 	//load levels
@@ -96,7 +94,7 @@ void Game::Init()
 	this->_levels.push_back(two);
 	this->_levels.push_back(three);
 	this->_levels.push_back(four);
-	this->_current_level = 0;
+	this->_current_level = 1;
 }
 
 void Game::ProcessInput(float dt)
@@ -206,12 +204,6 @@ void Game::Render()
 
 		this->_player->Draw(*_sprite_manager);
 		this->_ball->Draw(*_sprite_manager);
-		
-		/*_sprite_manager->DrawSprite(Resource_Manager::GetTexture("grant"),
-			glm::vec2(0, 0), glm::vec2(this->_width, this->_height), 0);*/
-
-		//_sprite_manager->DrawAnimatedSprite(&Resource_Manager::GetSprite("grant"), glm::vec2(0, 0));
-		//_sprite_manager->Draw();
 
 		this->_particle_generator->Draw();
 

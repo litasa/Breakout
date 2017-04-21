@@ -10,7 +10,7 @@ struct Sprite_Frame
 {
 	std::string _name;
 	glm::vec2 _size_of_sprite;
-	glm::vec2 _position_in_texture; //in pixels
+	glm::vec2 _position_in_texture; //upper left corner in pixels
 
 	Sprite_Frame(std::string name, glm::vec2 size, glm::vec2 pos)
 		: _name(name), _size_of_sprite(size), _position_in_texture(pos)
