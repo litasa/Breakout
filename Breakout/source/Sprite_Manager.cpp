@@ -40,7 +40,7 @@ void Sprite_Manager::DrawSprite(Texture2D & texture, glm::vec2 position, glm::ve
 	glBindVertexArray(0);
 }
 
-void Sprite_Manager::DrawAnimatedSprite(Sprite* sprite, glm::vec2 position, float rotation, glm::vec3 color)
+void Sprite_Manager::DrawAnimatedSprite(Sprite* sprite, glm::vec2 position, glm::vec2 scale, float rotation, glm::vec3 color)
 {
 	this->_shader.Use();
 	glm::mat4 model;
@@ -50,7 +50,7 @@ void Sprite_Manager::DrawAnimatedSprite(Sprite* sprite, glm::vec2 position, floa
 	model = glm::translate(model, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.0f));
 	model = glm::rotate(model, rotation, glm::vec3(0.0f, 0.0f, 1.0f));
 	model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f));
-	model = glm::scale(model, glm::vec3(size, 1.0f));
+	model = glm::scale(model, glm::vec3(scale, 1.0f));
 
 	this->_shader.setMatrix4("model", model);
 	this->_shader.setVec3("spriteColor", color);
@@ -68,7 +68,7 @@ void Sprite_Manager::Draw()
 {
 	for (auto sprite : _sprites)
 	{
-		DrawAnimatedSprite(&sprite.second, glm::vec2(0.0f));
+		DrawAnimatedSprite(&sprite.second, glm::vec2(0.0f), glm::vec2(1));
 	}
 }
 

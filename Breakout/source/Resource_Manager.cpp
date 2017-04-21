@@ -8,10 +8,13 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
+#include "Sprite.h"
+
 
 //instanciate static variables
 std::unordered_map<std::string, Shader> Resource_Manager::Shaders;
 std::unordered_map<std::string, Texture2D> Resource_Manager::Textures;
+std::unordered_map<std::string, Sprite> Resource_Manager::Sprites;
 
 Resource_Manager::~Resource_Manager()
 {
@@ -47,6 +50,22 @@ Texture2D Resource_Manager::LoadTexture(std::string name, const char * file)
 Texture2D& Resource_Manager::GetTexture(std::string name)
 {
 	return Textures[name];
+}
+
+Sprite Resource_Manager::LoadSprite(std::string name, std::string texture, const char * file)
+{
+	std::stringstream ss;
+	Sprites[name] = loadSpriteInfoFromFile(texture, file, ss);
+	if (ss.rdbuf()->in_avail() != NULL)
+	{
+		std::cout << "loadSprite " << name << " failed: " << ss.str() << std::endl;
+	}
+	return Sprites[name];
+}
+
+Sprite& Resource_Manager::GetSprite(std::string name)
+{
+	return Sprites[name];
 }
 
 void Resource_Manager::Clear()
@@ -110,4 +129,11 @@ Texture2D Resource_Manager::loadTextureFromFile(const char * file, std::stringst
 	texture.Generate(width, height, image);
 	stbi_image_free(image);
 	return texture;
+}
+
+Sprite Resource_Manager::loadSpriteInfoFromFile(std::string texture, const char * file, std::stringstream & ss)
+{
+	//TODO Add loading from file to get sprite frame data
+	Texture2D* temp = &Textures[texture];
+	return Sprite(temp, glm::vec2(temp->_width,temp->_height), nullptr);
 }

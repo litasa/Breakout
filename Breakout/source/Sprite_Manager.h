@@ -18,7 +18,7 @@ public:
 		float rotation = 0.0f,
 		glm::vec3 color = glm::vec3(1.0f));
 
-	void DrawAnimatedSprite(Sprite* sprite, glm::vec2 position, float rotation = 0.0f, glm::vec3 color = glm::vec3(1.0f));
+	void DrawAnimatedSprite(Sprite* sprite, glm::vec2 position, glm::vec2 scale, float rotation = 0.0f, glm::vec3 color = glm::vec3(1.0f));
 	void Draw();
 
 	void Update(float dt);
