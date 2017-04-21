@@ -8,7 +8,7 @@ public:
 	float _radius;
 	bool _stuck_to_paddle;
 
-	Ball_Object(glm::vec2 pos, float radius, glm::vec2 velocity, Texture2D sprite, Sprite* real_sprite);
+	Ball_Object(glm::vec2 pos, float radius, glm::vec2 velocity,Sprite* _sprite);
 	Ball_Object();
 
 	glm::vec2 Move(float dt, unsigned int window_width);
@@ -16,5 +16,5 @@ public:
 
 	virtual void Draw(Sprite_Manager &render) override;
 
-	Sprite* _real_sprite;
+	Sprite* _sprite;
 };

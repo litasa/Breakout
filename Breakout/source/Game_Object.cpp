@@ -1,6 +1,6 @@
 #include "Game_Object.h"
 
-Game_Object::Game_Object(glm::vec2 pos, glm::vec2 size, Texture2D sprite, glm::vec3 color, glm::vec2 velocity)
+Game_Object::Game_Object(glm::vec2 pos, glm::vec2 size, Sprite* sprite, glm::vec3 color, glm::vec2 velocity)
 	: _position(pos), _velocity(velocity), _size(size), _color(color), _rotation(0), _visable(true), _sprite(sprite)
 {
 }
@@ -16,5 +16,5 @@ Game_Object::~Game_Object()
 
 void Game_Object::Draw(Sprite_Manager & render)
 {
-	render.DrawSprite(this->_sprite, this->_position, this->_size, this->_rotation, this->_color);
+	render.DrawAnimatedSprite(this->_sprite, this->_position, this->_size, this->_rotation, this->_color);
 }

@@ -6,7 +6,7 @@
 class Game_Object
 {
 public:
-	Game_Object(glm::vec2 pos, glm::vec2 size, Texture2D sprite,
+	Game_Object(glm::vec2 pos, glm::vec2 size, Sprite* sprite,
 		glm::vec3 color = glm::vec3(1.0f), glm::vec2 velocity = glm::vec2(0.0f));
 	Game_Object();
 	~Game_Object();
@@ -20,7 +20,7 @@ public:
 	float _rotation;
 	bool _visable;
 
-	Texture2D _sprite;
+	Sprite* _sprite;
 
 	virtual void Draw(Sprite_Manager &render);
 };

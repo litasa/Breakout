@@ -57,8 +57,10 @@ void Game::Init()
 
 	//load sprites
 	Resource_Manager::LoadSprite("ball", "ball", nullptr);
-
-
+	Resource_Manager::LoadSprite("block", "block", nullptr);
+	Resource_Manager::LoadSprite("block_solid", "block_solid", nullptr);
+	Resource_Manager::LoadSprite("particle", "particle", nullptr);
+	Resource_Manager::LoadSprite("paddle", "paddle", nullptr);
 
 	//setup extra systems
 	_sprite_manager = new Sprite_Manager(Resource_Manager::GetShader("sprite"));
@@ -79,8 +81,8 @@ void Game::Init()
 	//init text
 	_text_renderer->Load("./data/fonts/OCRAEXT.TTF", 24);
 
-	_player = new Game_Object(glm::vec2(0,0), PLAYER_SIZE, Resource_Manager::GetTexture("paddle"));
-	_ball = new Ball_Object(glm::vec2(0,0), BALL_RADIUS, INITIAL_BALL_VELOCITY, Resource_Manager::GetTexture("ball"), &Resource_Manager::GetSprite("ball"));
+	_player = new Game_Object(glm::vec2(0,0), PLAYER_SIZE, &Resource_Manager::GetSprite("paddle"));
+	_ball = new Ball_Object(glm::vec2(0,0), BALL_RADIUS, INITIAL_BALL_VELOCITY, &Resource_Manager::GetSprite("ball"));
 	_sprite_manager->AddSprite("grant", &Resource_Manager::GetTexture("grant"), "nullstr");
 	this->ResetPlayer();
 
