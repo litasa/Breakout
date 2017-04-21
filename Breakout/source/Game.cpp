@@ -89,12 +89,12 @@ void Game::Init()
 	Game_Level one;   one.Load  ("./data/levels/level_1.txt", this->_width, half_height);
 	Game_Level two;	  two.Load  ("./data/levels/level_2.txt", this->_width, half_height);
 	Game_Level three; three.Load("./data/levels/level_3.txt", this->_width, half_height);
-	Game_Level four;  four.Load ("./data/levels/level_1.txt", this->_width, half_height);
+	Game_Level four;  four.Load ("./data/levels/level_4.txt", this->_width, half_height);
 	this->_levels.push_back(one);
 	this->_levels.push_back(two);
 	this->_levels.push_back(three);
 	this->_levels.push_back(four);
-	this->_current_level = 3;
+	this->_current_level = 0;
 }
 
 void Game::ProcessInput(float dt)
@@ -295,7 +295,7 @@ void Game::ResetLevel()
 	else if (this->_current_level == 2)
 		this->_levels[2].Load("./data/levels/level_3.txt", this->_width, half_height);
 	else if (this->_current_level == 3)
-		this->_levels[3].Load("./data/levels/level_1.txt", this->_width, half_height);
+		this->_levels[3].Load("./data/levels/level_4.txt", this->_width, half_height);
 }
 
 void Game::ResetPlayer()
