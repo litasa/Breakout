@@ -246,7 +246,7 @@ void Game::Render()
 	}
 	else if (this->_state == State::GAME_OVER_WIN)
 	{
-		_text_renderer->RenderText("The game is over. Please like me", float(_width / 2), float(_height / 2));
+		_text_renderer->RenderText("The game is over. Please like me", float(_width / 2 -10*20), float(_height / 2));
 	}
 }
 
