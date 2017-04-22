@@ -1,1 +1,4 @@
-blue_ball,48,136,8,8
+blue_ball,48,136,8,8,
+blue_paddle,48,72,64,16,
+blue_block,8,8,32,16,
+gold_solid_block,84,48,32,16,

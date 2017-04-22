@@ -63,6 +63,48 @@ Sprite Resource_Manager::LoadSprite(std::string name, std::string texture, const
 	return Sprites[name];
 }
 
+void Resource_Manager::LoadSpritesFromFile(std::string texture, const char * file)
+{
+	std::ifstream sprite_file;
+	if (file != NULL)
+	{
+		sprite_file.open(file, std::ios_base::in);
+		if (!sprite_file.is_open())
+		{
+			std::cerr << "Could not open: " << file << std::endl;
+		}
+		while (sprite_file.good())
+		{
+			std::string str;
+			std::string name;
+			int width, height;
+			int posx, posy;
+			std::getline(sprite_file, str, ',');
+			name = str;
+			std::cout << "Sprite file name: " << name << std::endl;
+
+			std::getline(sprite_file, str, ',');
+			posx = atoi(str.c_str());
+			std::cout << "Sprite top X: " << posx << std::endl;
+
+			std::getline(sprite_file, str, ',');
+			posy = atoi(str.c_str());
+			std::cout << "Sprite Top Y: " << posy << std::endl;
+
+			std::getline(sprite_file, str, ',');
+			width = atoi(str.c_str());
+			std::cout << "Sprite Width: " << width << std::endl;
+
+			std::getline(sprite_file, str, '\n');
+			height = atoi(str.c_str());
+			std::cout << "Sprite Height: " << height << std::endl;
+			Sprite temp(&Textures[texture], glm::vec2(width, height), nullptr);
+			temp._position_in_texture = glm::vec2(posx, posy);
+			Sprites[name] = temp;
+		}
+	}
+}
+
 Sprite& Resource_Manager::GetSprite(std::string name)
 {
 	return Sprites[name];
@@ -134,42 +176,6 @@ Texture2D Resource_Manager::loadTextureFromFile(const char * file, std::stringst
 Sprite Resource_Manager::loadSpriteInfoFromFile(std::string texture, const char * file, std::stringstream & ss)
 {
 	//TODO Add loading from file to get sprite frame data
-	std::ifstream sprite_file;
-	if (file != NULL)
-	{
-		sprite_file.open(file, std::ios_base::in);
-		if (!sprite_file.is_open())
-		{
-			std::cerr << "Could not open: " << file << std::endl;
-		}
-		while (sprite_file.good())
-		{
-			std::string str;
-			int width, height;
-			int posx, posy;
-			std::getline(sprite_file, str, ',');
-			std::cout << "Sprite file name: " << str << std::endl;
-
-			std::getline(sprite_file, str, ',');
-			posx = atoi(str.c_str());
-			std::cout << "Sprite top X: " << posx << std::endl;
-
-			std::getline(sprite_file, str, ',');
-			posy = atoi(str.c_str());
-			std::cout << "Sprite Top Y: " << posy << std::endl;
-
-			std::getline(sprite_file, str, ',');
-			width = atoi(str.c_str());
-			std::cout << "Sprite Width: " << width << std::endl;
-
-			std::getline(sprite_file, str, ',');
-			height = atoi(str.c_str());
-			std::cout << "Sprite Height: " << height << std::endl;
-			Sprite temp(&Textures[texture], glm::vec2(width, height), nullptr);
-			temp._position_in_texture = glm::vec2(posx, posy);
-			return temp;
-		}
-	}
 	Texture2D* temp = &Textures[texture];
 	return Sprite(temp, glm::vec2(temp->_width,temp->_height), nullptr);
 }

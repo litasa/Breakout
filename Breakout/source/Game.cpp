@@ -56,7 +56,8 @@ void Game::Init()
 	Resource_Manager::LoadTexture("sheet", "./data/textures/breakout_pieces.png");
 
 	//load sprites
-	Resource_Manager::LoadSprite("ball", "sheet", "./data/textures/breakout_pieces_layout.txt");
+	Resource_Manager::LoadSpritesFromFile("sheet", "./data/textures/breakout_pieces_layout.txt");
+	Resource_Manager::LoadSprite("ball", "ball", nullptr);
 	Resource_Manager::LoadSprite("block", "block", nullptr);
 	Resource_Manager::LoadSprite("block_solid", "block_solid", nullptr);
 	Resource_Manager::LoadSprite("particle", "particle", nullptr);
@@ -81,8 +82,8 @@ void Game::Init()
 	//init text
 	_text_renderer->Load("./data/fonts/OCRAEXT.TTF", 24);
 
-	_player = new Game_Object(glm::vec2(0,0), PLAYER_SIZE, &Resource_Manager::GetSprite("paddle"));
-	_ball = new Ball_Object(glm::vec2(0,0), BALL_RADIUS, INITIAL_BALL_VELOCITY, &Resource_Manager::GetSprite("ball"));
+	_player = new Game_Object(glm::vec2(0,0), PLAYER_SIZE, &Resource_Manager::GetSprite("blue_paddle"));
+	_ball = new Ball_Object(glm::vec2(0,0), BALL_RADIUS, INITIAL_BALL_VELOCITY, &Resource_Manager::GetSprite("blue_ball"));
 	this->ResetPlayer();
 
 	//load levels

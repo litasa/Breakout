@@ -78,7 +78,7 @@ void Game_Level::initialize(std::vector<std::vector<unsigned int>> tile_data, un
 				glm::vec2 pos = glm::vec2(unit_width*x, unit_height*y);
 				glm::vec2 size = glm::vec2(unit_width, unit_height);
 
-				Brick brick(pos, size, &Resource_Manager::GetSprite("block_solid"),
+				Brick brick(pos, size, &Resource_Manager::GetSprite("gold_solid_block"),
 					glm::vec3(0.8f, 0.8f, 0.7f));
 				brick._is_solid = true;
 				this->_bricks.push_back(brick);
@@ -98,7 +98,7 @@ void Game_Level::initialize(std::vector<std::vector<unsigned int>> tile_data, un
 				glm::vec2 pos(unit_width*x, unit_height*y);
 				glm::vec2 size(unit_width, unit_height);
 
-				this->_bricks.push_back(Brick(pos, size, &Resource_Manager::GetSprite("block"), color));
+				this->_bricks.push_back(Brick(pos, size, &Resource_Manager::GetSprite("blue_block"), color));
 			}
 		}
 	}

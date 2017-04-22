@@ -19,6 +19,7 @@ public:
 	static Texture2D& GetTexture(std::string name);
 
 	static Sprite LoadSprite(std::string name, std::string texture, const char* file);
+	static void LoadSpritesFromFile(std::string texture, const char* file);
 	static Sprite& GetSprite(std::string name);
 
 	static void Clear();
