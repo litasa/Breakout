@@ -230,3 +230,5 @@ _Pvt_Extensions
 *.txt
 *Breakout.VC.db
 *Breakout.VC.VC.opendb
+
+!/Breakout/**/*.txt

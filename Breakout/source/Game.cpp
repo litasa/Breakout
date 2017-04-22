@@ -53,9 +53,10 @@ void Game::Init()
 	Resource_Manager::LoadTexture("particle", "./data/textures/particle.png");
 	Resource_Manager::LoadTexture("paddle", "./data/textures/paddle.png");
 	Resource_Manager::LoadTexture("ball", "./data/textures/awesomeface.png");
+	Resource_Manager::LoadTexture("sheet", "./data/textures/breakout_pieces.png");
 
 	//load sprites
-	Resource_Manager::LoadSprite("ball", "ball", nullptr);
+	Resource_Manager::LoadSprite("ball", "sheet", "./data/textures/breakout_pieces_layout.txt");
 	Resource_Manager::LoadSprite("block", "block", nullptr);
 	Resource_Manager::LoadSprite("block_solid", "block_solid", nullptr);
 	Resource_Manager::LoadSprite("particle", "particle", nullptr);
