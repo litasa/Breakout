@@ -298,6 +298,8 @@ void Game::ResetLevel()
 		this->_levels[2].Load("./data/levels/level_3.txt", this->_width, half_height);
 	else if (this->_current_level == 3)
 		this->_levels[3].Load("./data/levels/level_4.txt", this->_width, half_height);
+
+	_sound_engine->removeAllSoundSources();
 }
 
 void Game::ResetPlayer()
@@ -342,12 +344,14 @@ void Game::PerformCollision()
 				if (!brick._is_solid)
 				{
 					brick._destroyed = true;
+					this->_sound_engine->stopAllSounds();
 					this->_sound_engine->play2D("./data/sound/bleep.mp3");
 				}
 				else
 				{
 					_shake_time = 0.05f;
 					_special_effects->_shake = true;
+					this->_sound_engine->stopAllSounds();
 					this->_sound_engine->play2D("./data/sound/solid.wav");
 				}
 
@@ -399,7 +403,8 @@ void Game::PerformCollision()
 				_ball->_velocity = glm::normalize(_ball->_velocity) * glm::length(old_velocity);
 
 				_ball->_velocity.y = -1 * abs(_ball->_velocity.y);
-				this->_sound_engine->play2D("./data/sound/bleep.wav", false);
+				this->_sound_engine->stopAllSounds();
+				this->_sound_engine->play2D("./data/sound/sfx_coin_single2.wav");
 			}
 		}
 	}
