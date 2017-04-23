@@ -22,7 +22,11 @@ Game::~Game()
 	delete _particle_generator;
 	delete _sprite_manager;
 	delete _special_effects;
-	_sound_engine->drop(); //deletes the sound engine
+	_bleep_sound->drop();
+	_solid_sound->drop();
+	_paddle_sound->drop();
+	_sound_engine->drop();
+	_sound_engine_bgmusic->drop();
 	delete _text_renderer;
 }
 
@@ -71,13 +75,18 @@ void Game::Init()
 		Resource_Manager::GetTexture("particle"),
 		500);
 	_sound_engine = irrklang::createIrrKlangDevice();
+	_sound_engine_bgmusic = irrklang::createIrrKlangDevice();
 	_text_renderer = new Text_Renderer(this->_width, this->_height);
 
 	//init sound engine
 	if (!_sound_engine) {
 		std::cerr << "Error starting up sound engine" << std::endl;
 	}
-	//_sound_engine->play2D("./data/sound/Helena_Jakob.wav", true); //setup looping background music Should load as levels are loaded
+
+	_bleep_sound = _sound_engine->play2D("./data/sound/bleep.mp3", false, true, true);
+	_solid_sound = _sound_engine->play2D("./data/sound/solid.wav", false, true, true);
+	_paddle_sound = _sound_engine->play2D("./data/sound/sfx_coin_single2.wav", false, true, true);
+	//_sound_engine_bgmusic->play2D("./data/sound/Helena_Jakob.wav", true); //setup looping background music Should load as levels are loaded
 
 	//init text
 	_text_renderer->Load("./data/fonts/OCRAEXT.TTF", 24);
@@ -299,7 +308,7 @@ void Game::ResetLevel()
 	else if (this->_current_level == 3)
 		this->_levels[3].Load("./data/levels/level_4.txt", this->_width, half_height);
 
-	_sound_engine->removeAllSoundSources();
+	_sound_engine->stopAllSounds();
 }
 
 void Game::ResetPlayer()
@@ -344,15 +353,21 @@ void Game::PerformCollision()
 				if (!brick._is_solid)
 				{
 					brick._destroyed = true;
-					this->_sound_engine->stopAllSounds();
-					this->_sound_engine->play2D("./data/sound/bleep.mp3");
+					if (!_bleep_sound->isFinished())
+					{
+						_bleep_sound->drop();
+					}
+					_bleep_sound = this->_sound_engine->play2D(_bleep_sound->getSoundSource(),false,false,true);
 				}
 				else
 				{
 					_shake_time = 0.05f;
 					_special_effects->_shake = true;
-					this->_sound_engine->stopAllSounds();
-					this->_sound_engine->play2D("./data/sound/solid.wav");
+					if (!_solid_sound->isFinished())
+					{
+						_solid_sound->stop();
+					}
+					_solid_sound = this->_sound_engine->play2D(_solid_sound->getSoundSource(), false, false, true);
 				}
 
 				
@@ -403,8 +418,12 @@ void Game::PerformCollision()
 				_ball->_velocity = glm::normalize(_ball->_velocity) * glm::length(old_velocity);
 
 				_ball->_velocity.y = -1 * abs(_ball->_velocity.y);
-				this->_sound_engine->stopAllSounds();
-				this->_sound_engine->play2D("./data/sound/sfx_coin_single2.wav");
+
+				if (!_paddle_sound->isFinished())
+				{
+					_paddle_sound->stop();
+				}
+				_paddle_sound = this->_sound_engine->play2D(_paddle_sound->getSoundSource(), false, false, true);
 			}
 		}
 	}

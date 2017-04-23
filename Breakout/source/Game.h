@@ -62,7 +62,11 @@ private:
 	Post_Processor* _special_effects;
 	Particle_Generator* _particle_generator;
 	irrklang::ISoundEngine *_sound_engine;
+	irrklang::ISoundEngine *_sound_engine_bgmusic;
 	Text_Renderer* _text_renderer;
+	irrklang::ISound *_bleep_sound;
+	irrklang::ISound *_solid_sound;
+	irrklang::ISound *_paddle_sound;
 
 	const glm::vec2 PLAYER_SIZE = glm::vec2(100.0f, 20.0f);
 	const float PLAYER_VELOCITY = float(500.0f);
