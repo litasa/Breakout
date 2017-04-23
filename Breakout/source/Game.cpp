@@ -331,7 +331,6 @@ Game::Direction Game::VectorHitDirection(glm::vec2 target)
 
 void Game::PerformCollision()
 {
-	int count = 0;
 	for (Brick &brick : this->_levels[this->_current_level]._bricks)
 	{
 		if (!brick._destroyed)
@@ -384,26 +383,23 @@ void Game::PerformCollision()
 					}
 				}
 			}
-
-			collision = checkCollision(*_player, *_ball);
-			if (!_ball->_stuck_to_paddle && std::get<0>(collision))
-			{
-				count++;
-				float center = _player->_position.x + _player->_size.x / 2;
-				float distance_to_center = (_ball->_position.x + _ball->_radius) - center;
-				float percentage = distance_to_center / (_player->_size.x / 2);
-
-				float strength = 2.0f;
-				glm::vec2 old_velocity = _ball->_velocity;
-				_ball->_velocity.x = INITIAL_BALL_VELOCITY.x * percentage * strength;
-				_ball->_velocity.y = -_ball->_velocity.y;
-				_ball->_velocity = glm::normalize(_ball->_velocity) * glm::length(old_velocity);
-
-				_ball->_velocity.y = -1 * abs(_ball->_velocity.y);
-
-				Sound_Manager::play("paddle");
-			}
 		}
 	}
-	std::cout << "times hit paddle: " << count << std::endl;
+	Collision collision = checkCollision(*_player, *_ball);
+	if (!_ball->_stuck_to_paddle && std::get<0>(collision))
+	{
+		float center = _player->_position.x + _player->_size.x / 2;
+		float distance_to_center = (_ball->_position.x + _ball->_radius) - center;
+		float percentage = distance_to_center / (_player->_size.x / 2);
+
+		float strength = 2.0f;
+		glm::vec2 old_velocity = _ball->_velocity;
+		_ball->_velocity.x = INITIAL_BALL_VELOCITY.x * percentage * strength;
+		_ball->_velocity.y = -_ball->_velocity.y;
+		_ball->_velocity = glm::normalize(_ball->_velocity) * glm::length(old_velocity);
+
+		_ball->_velocity.y = -1 * abs(_ball->_velocity.y);
+
+		Sound_Manager::play("paddle");
+	}
 }
