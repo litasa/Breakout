@@ -1,6 +1,7 @@
 #pragma once
 #include <unordered_map>
-
+#include <irrKlang.h>
+#pragma comment(lib, "irrKlang.lib")
 #include <GL\glew.h>
 #include "Shader.h"
 #include "Texture2D.h"
@@ -37,5 +38,7 @@ private:
 	static std::unordered_map<std::string, Shader> Shaders;
 	static std::unordered_map<std::string, Texture2D> Textures;
 	static std::unordered_map<std::string, Sprite> Sprites;
+	
+
 };
 

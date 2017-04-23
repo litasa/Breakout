@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "Resource_Manager.h"
+#include "Sound_Manager.h"
 
 #include <GLFW\glfw3.h>
 
@@ -22,11 +23,6 @@ Game::~Game()
 	delete _particle_generator;
 	delete _sprite_manager;
 	delete _special_effects;
-	_bleep_sound->drop();
-	_solid_sound->drop();
-	_paddle_sound->drop();
-	_sound_engine->drop();
-	_sound_engine_bgmusic->drop();
 	delete _text_renderer;
 }
 
@@ -74,18 +70,12 @@ void Game::Init()
 		Resource_Manager::GetShader("particle"),
 		Resource_Manager::GetTexture("particle"),
 		500);
-	_sound_engine = irrklang::createIrrKlangDevice();
-	_sound_engine_bgmusic = irrklang::createIrrKlangDevice();
 	_text_renderer = new Text_Renderer(this->_width, this->_height);
 
-	//init sound engine
-	if (!_sound_engine) {
-		std::cerr << "Error starting up sound engine" << std::endl;
-	}
+	Sound_Manager::add_sound_source("bleep", "./data/sound/bleep.mp3");
+	Sound_Manager::add_sound_source("solid", "./data/sound/solid.wav");
+	Sound_Manager::add_sound_source("paddle", "./data/sound/sfx_coin_single2.wav");
 
-	_bleep_sound = _sound_engine->play2D("./data/sound/bleep.mp3", false, true, true);
-	_solid_sound = _sound_engine->play2D("./data/sound/solid.wav", false, true, true);
-	_paddle_sound = _sound_engine->play2D("./data/sound/sfx_coin_single2.wav", false, true, true);
 	//_sound_engine_bgmusic->play2D("./data/sound/Helena_Jakob.wav", true); //setup looping background music Should load as levels are loaded
 
 	//init text
@@ -307,8 +297,6 @@ void Game::ResetLevel()
 		this->_levels[2].Load("./data/levels/level_3.txt", this->_width, half_height);
 	else if (this->_current_level == 3)
 		this->_levels[3].Load("./data/levels/level_4.txt", this->_width, half_height);
-
-	_sound_engine->stopAllSounds();
 }
 
 void Game::ResetPlayer()
@@ -343,6 +331,7 @@ Game::Direction Game::VectorHitDirection(glm::vec2 target)
 
 void Game::PerformCollision()
 {
+	int count = 0;
 	for (Brick &brick : this->_levels[this->_current_level]._bricks)
 	{
 		if (!brick._destroyed)
@@ -353,21 +342,13 @@ void Game::PerformCollision()
 				if (!brick._is_solid)
 				{
 					brick._destroyed = true;
-					if (!_bleep_sound->isFinished())
-					{
-						_bleep_sound->drop();
-					}
-					_bleep_sound = this->_sound_engine->play2D(_bleep_sound->getSoundSource(),false,false,true);
+					Sound_Manager::play("bleep");
 				}
 				else
 				{
 					_shake_time = 0.05f;
 					_special_effects->_shake = true;
-					if (!_solid_sound->isFinished())
-					{
-						_solid_sound->stop();
-					}
-					_solid_sound = this->_sound_engine->play2D(_solid_sound->getSoundSource(), false, false, true);
+					Sound_Manager::play("solid");
 				}
 
 				
@@ -407,6 +388,7 @@ void Game::PerformCollision()
 			collision = checkCollision(*_player, *_ball);
 			if (!_ball->_stuck_to_paddle && std::get<0>(collision))
 			{
+				count++;
 				float center = _player->_position.x + _player->_size.x / 2;
 				float distance_to_center = (_ball->_position.x + _ball->_radius) - center;
 				float percentage = distance_to_center / (_player->_size.x / 2);
@@ -419,12 +401,9 @@ void Game::PerformCollision()
 
 				_ball->_velocity.y = -1 * abs(_ball->_velocity.y);
 
-				if (!_paddle_sound->isFinished())
-				{
-					_paddle_sound->stop();
-				}
-				_paddle_sound = this->_sound_engine->play2D(_paddle_sound->getSoundSource(), false, false, true);
+				Sound_Manager::play("paddle");
 			}
 		}
 	}
+	std::cout << "times hit paddle: " << count << std::endl;
 }

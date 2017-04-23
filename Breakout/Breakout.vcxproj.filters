@@ -60,6 +60,9 @@
     <ClCompile Include="source\Sprite_Manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\Sound_Manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\Resource_Manager.h">
@@ -99,6 +102,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="source\Sprite_Manager.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Sound_Manager.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -10,13 +10,10 @@
 
 #include "Sprite.h"
 
-
-
 //instanciate static variables
 std::unordered_map<std::string, Shader> Resource_Manager::Shaders;
 std::unordered_map<std::string, Texture2D> Resource_Manager::Textures;
 std::unordered_map<std::string, Sprite> Resource_Manager::Sprites;
-
 
 Resource_Manager::~Resource_Manager()
 {
